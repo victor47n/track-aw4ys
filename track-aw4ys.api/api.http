@@ -1,0 +1,23 @@
+GET http://localhost:3000/places?text=Rua Antonio Tatoni, 260, COHAB IV
+
+###
+GET http://localhost:3000/places?text=122 R. Gabriel Pio Loiola, São João da Boa Vista
+
+###
+@originId = ChIJs1VJfQMsyJQR7F19p440y8c
+@destinationId = EllSLiBHYWJyaWVsIFBpbyBMb2lvbGEsIDEyMiAtIFZpbGEgTG95b2xhLCBTw6NvIEpvw6NvIGRhIEJvYSBWaXN0YSAtIFNQLCAxMzg3MC02MDgsIEJyYXNpbCIwEi4KFAoSCdHD6rh0y8mUEWB8DEggMQc3EHoqFAoSCS3CXM90y8mUETCtq1W9pd4R
+###
+GET http://localhost:3000/directions?originId={{originId}}&destinationId={{destinationId}}
+
+###
+POST http://localhost:3000/routes
+Content-Type: application/json
+
+{
+  "name": "Rota 1",
+  "source_id": "{{originId}}",
+  "destination_id": "{{destinationId}}"
+}
+
+###
+GET http://localhost:3000/routes
