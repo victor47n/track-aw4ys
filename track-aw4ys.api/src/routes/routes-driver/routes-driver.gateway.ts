@@ -1,5 +1,11 @@
-import { SubscribeMessage, WebSocketGateway } from '@nestjs/websockets';
+import {
+  SubscribeMessage,
+  WebSocketGateway,
+  WebSocketServer,
+} from '@nestjs/websockets';
 import { RoutesService } from '../routes.service';
+import { Server } from 'socket.io';
+import { Logger } from '@nestjs/common';
 
 type PayloadProps = {
   routeId: string;
@@ -11,6 +17,11 @@ type PayloadProps = {
   },
 })
 export class RoutesDriverGateway {
+  @WebSocketServer()
+  server: Server;
+
+  private logger = new Logger(RoutesDriverGateway.name);
+
   constructor(private routesService: RoutesService) {}
 
   @SubscribeMessage('client:new-points')
@@ -52,6 +63,24 @@ export class RoutesDriverGateway {
 
       await sleep(2000);
     }
+  }
+
+  emitNewPoints(payload: { routeId: string; lat: number; lng: number }) {
+    this.logger.log(
+      `Emiting new points for route ${payload.routeId} - ${payload.lat}, ${payload.lng}`,
+    );
+
+    this.server.emit(`server:new-points/${payload.routeId}:list`, {
+      routeId: payload.routeId,
+      lat: payload.lat,
+      lng: payload.lng,
+    });
+
+    this.server.emit('server:new-points:list', {
+      routeId: payload.routeId,
+      lat: payload.lat,
+      lng: payload.lng,
+    });
   }
 }
 

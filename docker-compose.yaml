@@ -1,0 +1,4 @@
+include:
+  - ./track-aw4ys.simulator/docker-compose.yaml
+  - ./track-aw4ys.api/docker-compose.yaml
+  - ./track-aw4ys.frontend/docker-compose.yaml

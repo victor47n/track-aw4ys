@@ -9,15 +9,15 @@ import (
 )
 
 type Directions struct {
-	Lat float64 `bson: "lat" json: "lat"`
-	Lng float64 `bson: "lng" json: "lng"`
+	Lat float64 `bson:"lat" json:"lat"`
+	Lng float64 `bson:"lng" json:"lng"`
 }
 
 type Route struct {
-	Id           string       `bson: "_id" json: "id"`
-	Distance     int          `bson: "distance" json: "distance"`
-	Directions   []Directions `bson: "directions" json: "directions"`
-	FreightPrice float64      `bson: "freight_price" json: "freight_price"`
+	Id           string       `bson:"_id" json:"id"`
+	Distance     int          `bson:"distance" json:"distance"`
+	Directions   []Directions `bson:"directions" json:"directions"`
+	FreightPrice float64      `bson:"freight_price" json:"freight_price"`
 }
 
 func NewRoute(id string, distance int, directions []Directions) *Route {
@@ -39,13 +39,13 @@ func NewFreightService() *FreightService {
 }
 
 type RouteService struct {
-	mong           *mongo.Client
+	mongo          *mongo.Client
 	freightService *FreightService
 }
 
-func NewRouteService(mong *mongo.Client, freightService *FreightService) *RouteService {
+func NewRouteService(mongo *mongo.Client, freightService *FreightService) *RouteService {
 	return &RouteService{
-		mong:           mong,
+		mongo:          mongo,
 		freightService: freightService,
 	}
 }
@@ -64,7 +64,7 @@ func (rs *RouteService) CreateRoute(route *Route) (*Route, error) {
 	filter := bson.M{"_id": route.Id}
 	options := options.Update().SetUpsert(true)
 
-	_, err := rs.mong.Database("routes").Collection("routes").UpdateOne(nil, filter, update, options)
+	_, err := rs.mongo.Database("routes").Collection("routes").UpdateOne(nil, filter, update, options)
 
 	if err != nil {
 		return nil, err
@@ -78,11 +78,11 @@ func (rs *RouteService) GetRoute(id string) (Route, error) {
 
 	filter := bson.M{"_id": id}
 
-	err := rs.mong.Database("routes").Collection("routes").FindOne(nil, filter).Decode(&route)
+	err := rs.mongo.Database("routes").Collection("routes").FindOne(nil, filter).Decode(&route)
 
 	if err != nil {
 		return Route{}, err
 	}
 
-	return route, nil
+	return route, err
 }

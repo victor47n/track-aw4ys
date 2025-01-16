@@ -34,7 +34,7 @@ func NewFreightCalculatedEvent(routeId string, amount float64) *FreightCalculate
 
 type DeliveryStartedEvent struct {
 	EventName string `json:"event"`
-	RouteId   string `json:"route_id"`
+	RouteId   string `json:"id"`
 }
 
 func NewDeliveryStartedEvent(routeId string) *DeliveryStartedEvent {

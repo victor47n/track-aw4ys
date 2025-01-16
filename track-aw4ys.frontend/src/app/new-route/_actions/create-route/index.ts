@@ -8,7 +8,7 @@ export async function createRoute({
   destinationId,
 }: CreateRouteSchema) {
   const directionsResponse = await fetch(
-    `http://localhost:3000/directions?originId=${sourceId}&destinationId=${destinationId}`,
+    `${process.env.NEST_API_URL}/directions?originId=${sourceId}&destinationId=${destinationId}`,
     {
       // cache: "force-cache", //default
       // next: {
@@ -27,7 +27,7 @@ export async function createRoute({
   const startAddress = directionsData.routes[0].legs[0].start_address;
   const endAddress = directionsData.routes[0].legs[0].end_address;
 
-  const response = await fetch("http://localhost:3000/routes", {
+  const response = await fetch(`${process.env.NEST_API_URL}/routes`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",

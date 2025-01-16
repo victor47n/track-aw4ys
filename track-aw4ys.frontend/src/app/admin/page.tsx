@@ -12,12 +12,14 @@ export default function AdminPage() {
   useEffect(() => {
     if (!map) return;
 
+    socket.connect();
+
     socket.on("server:new-points:list", async (data: NewPoints) => {
       console.log(data);
 
       if (!map.hasRoute(data.routeId)) {
         const response = await fetch(
-          `http://localhost:3001/api/routes/${data.routeId}`
+          `${process.env.NEXT_PUBLIC_NEXT_API_URL}/routes/${data.routeId}`
         );
         const route = await response.json();
 

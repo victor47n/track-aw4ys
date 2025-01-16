@@ -48,14 +48,14 @@ func (eh *EventHub) HandleEvent(msg []byte) error {
 	}
 
 	switch baseEvent.EventName {
-	case "RouteCreated":
+	case "routeCreated":
 		var event RouteCreatedEvent
 		if err := json.Unmarshal(msg, &event); err != nil {
 			return fmt.Errorf("error unmarshaling RouteCreatedEvent: %w", err)
 		}
 		return eh.handleRouteCreated(event)
 
-	case "DeliveryStarted":
+	case "deliveryStarted":
 		var event DeliveryStartedEvent
 		if err := json.Unmarshal(msg, &event); err != nil {
 			return fmt.Errorf("error unmarshaling DeliveryStartedEvent: %w", err)
@@ -93,6 +93,8 @@ func (eh *EventHub) handleDeliveryStarted(event DeliveryStartedEvent) error {
 
 	go eh.sendDirections()
 
+	fmt.Printf("DeliveryStartedEvent created\n")
+
 	return nil
 }
 
@@ -100,6 +102,8 @@ func (eh *EventHub) sendDirections() {
 	for {
 		select {
 		case movedEvent := <-eh.chDriverMoved:
+			fmt.Printf("NewDriverMovedEvent RouteId: %v\n", movedEvent.RouteId)
+
 			value, _ := json.Marshal(movedEvent)
 			if err := eh.simulatorWriter.WriteMessages(context.Background(), kafka.Message{
 				Key:   []byte(movedEvent.RouteId),
